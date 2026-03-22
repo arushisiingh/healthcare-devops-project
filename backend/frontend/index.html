@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MediCare Pro — Healthcare Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#f7f9fc;
+  --border:#dde3ec;--text:#1a2332;--text2:#4a5568;--text3:#8a96a8;
+  --accent:#0057b8;--accent2:#003d8a;--accent-light:#e8f0fb;
+  --green:#0a7c4a;--green-bg:#e6f4ee;
+  --red:#c0392b;--red-bg:#fdf0ef;
+  --amber:#b45309;--amber-bg:#fef3c7;
+  --teal:#0e7490;--teal-bg:#e0f2f7;
+  --radius:10px;--shadow:0 2px 8px rgba(0,40,100,0.07);--shadow-md:0 4px 20px rgba(0,40,100,0.11);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,select,textarea{font-family:inherit}
+
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;align-items:stretch}
+.login-left{flex:1;background:var(--accent2);display:flex;flex-direction:column;justify-content:center;padding:64px;position:relative;overflow:hidden}
+.login-left::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,0.05)}
+.login-left::after{content:'';position:absolute;bottom:-60px;left:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.l-brand{display:flex;align-items:center;gap:14px;margin-bottom:48px}
+.l-brand-icon{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.l-brand-name{font-family:'Playfair Display',serif;font-size:22px;color:#fff}
+.l-headline{font-family:'Playfair Display',serif;font-size:36px;color:#fff;line-height:1.25;margin-bottom:18px}
+.l-sub{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.7;max-width:360px}
+.l-stats{display:flex;gap:32px;margin-top:44px}
+.l-stat-num{font-size:24px;font-weight:600;color:#fff}
+.l-stat-lbl{font-size:12px;color:rgba(255,255,255,0.55);margin-top:2px}
+.login-right{width:480px;background:#fff;display:flex;flex-direction:column;justify-content:center;padding:64px 56px}
+.login-right h2{font-size:26px;font-weight:600;margin-bottom:6px}
+.login-right p{font-size:14px;color:var(--text3);margin-bottom:32px}
+.fl{display:block;font-size:12px;font-weight:500;color:var(--text2);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:6px}
+.fi{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;color:var(--text);transition:border-color 0.2s}
+.fi:focus{outline:none;border-color:var(--accent)}
+.fg{margin-bottom:18px}
+.role-tabs{display:flex;gap:8px;margin-bottom:24px}
+.role-tab{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;color:var(--text2);background:#fff;transition:all 0.18s}
+.role-tab.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
+.btn-primary{width:100%;padding:13px;background:var(--accent);color:#fff;border-radius:var(--radius);font-size:15px;font-weight:500;transition:background 0.18s;margin-top:4px}
+.btn-primary:hover{background:var(--accent2)}
+
+/* LAYOUT */
+#app{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--accent2);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:10}
+.sb-logo{padding:26px 22px 18px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px}
+.sb-logo-icon{width:34px;height:34px;background:rgba(255,255,255,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sb-logo-text{font-family:'Playfair Display',serif;font-size:16px;color:#fff}
+.sb-nav{flex:1;padding:14px 0;overflow-y:auto}
+.sb-sec{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.35);padding:14px 22px 6px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 22px;font-size:14px;color:rgba(255,255,255,0.65);cursor:pointer;transition:all 0.15s;border-left:3px solid transparent}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,0.06)}
+.nav-item.active{color:#fff;background:rgba(255,255,255,0.1);border-left-color:#60a5fa;font-weight:500}
+.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sb-user{padding:14px 18px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px}
+.u-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0}
+.u-name{font-size:13px;font-weight:500;color:#fff}
+.u-role{font-size:11px;color:rgba(255,255,255,0.5)}
+.logout-btn{margin-left:auto;background:transparent;color:rgba(255,255,255,0.4);font-size:16px;padding:4px;transition:color 0.15s}
+.logout-btn:hover{color:#fff}
+.main{margin-left:240px;flex:1;padding:32px;min-height:100vh}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-hd{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:15px;font-weight:600}
+.card-body{padding:20px}
+.ph{margin-bottom:26px}
+.ph h1{font-size:24px;font-weight:600;margin-bottom:4px}
+.ph p{font-size:14px;color:var(--text3)}
+.bc{font-size:12px;color:var(--text3);margin-bottom:8px}
+.bc span{color:var(--accent)}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+.topbar-r{display:flex;align-items:center;gap:10px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.bg-green{background:var(--green-bg);color:var(--green)}
+.bg-red{background:var(--red-bg);color:var(--red)}
+.bg-amber{background:var(--amber-bg);color:var(--amber)}
+.bg-blue{background:var(--accent-light);color:var(--accent)}
+.bg-teal{background:var(--teal-bg);color:var(--teal)}
+.bdot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;transition:all 0.15s;cursor:pointer}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-blue{background:var(--accent);color:#fff;border:none}.btn-blue:hover{background:var(--accent2)}
+.btn-outline{background:#fff;color:var(--text2);border:1.5px solid var(--border)}.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-ghost{background:transparent;color:var(--text2);border:none}.btn-ghost:hover{background:var(--surface2)}
+.btn-green{background:var(--green);color:#fff;border:none}.btn-green:hover{background:#085f38}
+.btn-red{background:var(--red);color:#fff;border:none}
+
+/* INPUTS */
+.inp{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);background:#fff;transition:border-color 0.2s;width:100%}
+.inp:focus{outline:none;border-color:var(--accent)}
+.fr{display:grid;gap:14px}
+.c2{grid-template-columns:1fr 1fr}
+.c3{grid-template-columns:1fr 1fr 1fr}
+.lbl{display:block;font-size:12px;font-weight:500;color:var(--text2);letter-spacing:0.4px;text-transform:uppercase;margin-bottom:5px}
+
+/* TABS */
+.tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:22px}
+.tab{padding:10px 18px;font-size:14px;font-weight:500;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:2px solid var(--border)}
+th{padding:11px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s}
+tbody tr:hover{background:var(--surface2)}
+tbody tr:last-child{border-bottom:none}
+td{padding:12px 14px;font-size:14px}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow)}
+.si{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.sv{font-size:26px;font-weight:600;line-height:1}
+.sl{font-size:12px;color:var(--text3);font-weight:500}
+.sc-ch{font-size:12px;font-weight:500}
+.sc-ch.up{color:var(--green)}
+
+/* PROGRESS */
+.pbar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.pfill{height:100%;border-radius:3px;transition:width 0.3s}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* STEP BAR */
+.step-bar{display:flex;align-items:center;margin-bottom:26px}
+.step{display:flex;align-items:center;gap:8px;flex:1}
+.step-num{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text3);flex-shrink:0;transition:all 0.2s}
+.step.done .step-num{background:var(--green);border-color:var(--green);color:#fff}
+.step.active .step-num{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-lbl{font-size:13px;font-weight:500;color:var(--text3)}
+.step.done .step-lbl,.step.active .step-lbl{color:var(--text)}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 8px;max-width:50px}
+.step.done .step-line{background:var(--green)}
+
+/* SPECIALTY CARDS */
+.spec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.spec-card{border:1.5px solid var(--border);border-radius:10px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.18s;background:#fff}
+.spec-card:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.spec-card.selected{border-color:var(--accent);background:var(--accent-light)}
+.spec-icon{font-size:30px;margin-bottom:8px}
+.spec-name{font-size:13px;font-weight:600;color:var(--text)}
+.spec-count{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* DOCTOR CARDS */
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.doc-card{border:1.5px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:12px;cursor:pointer;transition:all 0.18s;background:#fff}
+.doc-card:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.doc-card.selected{border-color:var(--accent);background:var(--accent-light)}
+.doc-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;flex-shrink:0}
+
+/* DATE + SLOT */
+.date-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:18px}
+.date-pill{flex-shrink:0;width:62px;text-align:center;padding:11px 6px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:#fff}
+.date-pill:hover{border-color:var(--accent)}
+.date-pill.sel{border-color:var(--accent);background:var(--accent);color:#fff}
+.dp-day{font-size:10px;font-weight:600;letter-spacing:0.5px;opacity:0.7}
+.dp-num{font-size:21px;font-weight:600;margin:2px 0}
+.dp-mon{font-size:10px;opacity:0.7}
+.slot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.slot{padding:9px;border:1.5px solid var(--border);border-radius:8px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;color:var(--text2);background:#fff}
+.slot:hover:not(.taken){border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.slot.sel{border-color:var(--accent);background:var(--accent);color:#fff}
+.slot.taken{opacity:0.35;cursor:not-allowed;background:var(--surface2)}
+
+/* VITALS */
+.vg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.vc{padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;text-align:center}
+.vv{font-size:22px;font-weight:600;font-family:'DM Mono',monospace}
+.vu{font-size:12px;color:var(--text3)}
+.vl{font-size:12px;font-weight:500;color:var(--text2);margin-top:5px}
+
+/* TIMELINE */
+.tl{display:flex;flex-direction:column}
+.tl-item{display:flex;gap:14px;padding-bottom:18px;position:relative}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:1px solid var(--border);background:var(--surface2)}
+.tl-line{position:absolute;left:17px;top:38px;bottom:0;width:1px;background:var(--border)}
+.tl-item:last-child .tl-line{display:none}
+
+/* BILLING */
+.bill-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);font-size:14px}
+.bill-row:last-child{border-bottom:none}
+.bill-total{display:flex;justify-content:space-between;padding:14px 0 0;font-size:16px;font-weight:700}
+.pay-method{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pay-opt{border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:8px;transition:all 0.15s;background:#fff}
+.pay-opt:hover,.pay-opt.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+
+/* PRESCRIPTION */
+.rx-card{border:1.5px solid var(--border);border-radius:10px;padding:16px;background:#fff;position:relative;overflow:hidden}
+.rx-card::before{content:'Rx';position:absolute;right:14px;top:10px;font-size:26px;font-weight:700;color:var(--border);font-family:'Playfair Display',serif}
+
+/* ALERT */
+.alert{padding:12px 14px;border-radius:8px;font-size:13px;display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+.al-blue{background:var(--accent-light);color:var(--accent);border:1px solid #bfd4f5}
+.al-green{background:var(--green-bg);color:var(--green);border:1px solid #a7d9be}
+.al-amber{background:var(--amber-bg);color:var(--amber);border:1px solid #f0d090}
+
+/* TOAST */
+#toast{position:fixed;bottom:26px;right:26px;background:#1a2332;color:#fff;padding:13px 18px;border-radius:10px;font-size:14px;box-shadow:0 8px 30px rgba(0,0,0,0.2);z-index:999;opacity:0;transition:opacity 0.3s;max-width:380px;pointer-events:none}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-left">
+    <div class="l-brand"><div class="l-brand-icon">🏥</div><div class="l-brand-name">MediCare Pro</div></div>
+    <div class="l-headline">Smarter healthcare,<br/>better outcomes.</div>
+    <div class="l-sub">A unified platform for patients and clinicians to manage appointments, records, prescriptions, and billing.</div>
+    <div class="l-stats">
+      <div><div class="l-stat-num">12,400+</div><div class="l-stat-lbl">Patients served</div></div>
+      <div><div class="l-stat-num">340</div><div class="l-stat-lbl">Doctors onboard</div></div>
+      <div><div class="l-stat-num">99.9%</div><div class="l-stat-lbl">Uptime SLA</div></div>
+    </div>
+  </div>
+  <div class="login-right">
+    <h2>Welcome back</h2>
+    <p>Sign in to your account to continue</p>
+    <div class="role-tabs">
+      <button class="role-tab active" onclick="selRole('patient',this)">👤 Patient</button>
+      <button class="role-tab" onclick="selRole('doctor',this)">🩺 Doctor</button>
+    </div>
+    <div class="fg"><label class="fl">Email address</label><input type="email" class="fi" id="l-email" value="patient@medicare.com"/></div>
+    <div class="fg"><label class="fl">Password</label><input type="password" class="fi" value="••••••••"/></div>
+    <button class="btn-primary" onclick="doLogin()">Sign in to dashboard</button>
+    <div style="margin-top:14px;font-size:12px;color:var(--text3);text-align:center">Demo: patient or doctor — any password</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+  <div class="sidebar">
+    <div class="sb-logo"><div class="sb-logo-icon">🏥</div><div class="sb-logo-text">MediCare Pro</div></div>
+    <nav class="sb-nav" id="sb-nav"></nav>
+    <div class="sb-user">
+      <div class="u-av" id="u-av">P</div>
+      <div><div class="u-name" id="u-name">Patient</div><div class="u-role" id="u-role">Patient Portal</div></div>
+      <button class="logout-btn" onclick="doLogout()">⏻</button>
+    </div>
+  </div>
+  <div class="main">
+    <div id="page-booking"></div>
+    <div id="page-doctor" style="display:none"></div>
+    <div id="page-records" style="display:none"></div>
+    <div id="page-prescriptions" style="display:none"></div>
+    <div id="page-billing" style="display:none"></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────
+const SPECS=[
+  {id:'cardiology',   icon:'❤️', name:'Cardiology',    n:6},
+  {id:'neurology',    icon:'🧠', name:'Neurology',     n:4},
+  {id:'orthopedics',  icon:'🦴', name:'Orthopedics',   n:8},
+  {id:'ophthalmology',icon:'👁️',name:'Ophthalmology', n:3},
+  {id:'pulmonology',  icon:'🫁', name:'Pulmonology',   n:5},
+  {id:'dermatology',  icon:'🧬', name:'Dermatology',   n:4},
+  {id:'pediatrics',   icon:'👶', name:'Pediatrics',    n:7},
+  {id:'dentistry',    icon:'🦷', name:'Dentistry',     n:6},
+];
+const DOCS={
+  cardiology:[
+    {id:'ms',av:'MS',name:'Dr. Michael Smith',  sp:'Cardiologist',         exp:'14 yrs',rat:'4.9',fee:'$180',bg:'#e8f0fb',tc:'#0057b8',next:'Today 2:00 PM'},
+    {id:'ak',av:'AK',name:'Dr. Anita Kapoor',   sp:'Interventional Cardio',exp:'11 yrs',rat:'4.7',fee:'$160',bg:'#e6f4ee',tc:'#0a7c4a',next:'Tomorrow 9 AM'},
+  ],
+  neurology:[
+    {id:'ep',av:'EP',name:'Dr. Emily Parker',   sp:'Neurologist',          exp:'9 yrs', rat:'4.8',fee:'$200',bg:'#ede9fe',tc:'#5b21b6',next:'Tomorrow 10 AM'},
+    {id:'jw',av:'JW',name:'Dr. James Wu',       sp:'Neuro-surgeon',        exp:'18 yrs',rat:'5.0',fee:'$240',bg:'#fef3c7',tc:'#b45309',next:'Dec 16 11 AM'},
+  ],
+  orthopedics:[
+    {id:'rk',av:'RK',name:'Dr. Raj Kumar',      sp:'Orthopedic Surgeon',   exp:'12 yrs',rat:'4.8',fee:'$190',bg:'#e0f2f7',tc:'#0e7490',next:'Dec 15 3 PM'},
+    {id:'sl',av:'SL',name:'Dr. Sandra Lee',     sp:'Sports Medicine',      exp:'7 yrs', rat:'4.6',fee:'$150',bg:'#fdf0ef',tc:'#c0392b',next:'Today 4 PM'},
+  ],
+  ophthalmology:[{id:'pb',av:'PB',name:'Dr. Paul Brooks',   sp:'Ophthalmologist',      exp:'15 yrs',rat:'4.9',fee:'$170',bg:'#e8f0fb',tc:'#0057b8',next:'Dec 17 9 AM'}],
+  pulmonology:  [{id:'nv',av:'NV',name:'Dr. Nina Vasquez',  sp:'Pulmonologist',        exp:'10 yrs',rat:'4.7',fee:'$175',bg:'#e6f4ee',tc:'#0a7c4a',next:'Tomorrow 11 AM'}],
+  dermatology:  [{id:'wz',av:'WZ',name:'Dr. Wei Zhang',     sp:'Dermatologist',        exp:'8 yrs', rat:'4.6',fee:'$140',bg:'#ede9fe',tc:'#5b21b6',next:'Dec 16 2 PM'}],
+  pediatrics:   [{id:'lg',av:'LG',name:'Dr. Lisa Green',    sp:'Pediatrician',         exp:'13 yrs',rat:'4.9',fee:'$130',bg:'#fef3c7',tc:'#b45309',next:'Today 3 PM'}],
+  dentistry:    [{id:'tm',av:'TM',name:'Dr. Tom Murphy',    sp:'General Dentist',      exp:'11 yrs',rat:'4.7',fee:'$120',bg:'#e0f2f7',tc:'#0e7490',next:'Tomorrow 9 AM'}],
+};
+const DATES=[
+  {d:'MON',n:'9', m:'DEC'},{d:'TUE',n:'10',m:'DEC'},{d:'WED',n:'11',m:'DEC'},
+  {d:'THU',n:'12',m:'DEC'},{d:'FRI',n:'13',m:'DEC'},{d:'SAT',n:'14',m:'DEC'},{d:'SUN',n:'15',m:'DEC'}
+];
+const MS=['8:00 AM','8:30 AM','9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM'];
+const AS=['1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM'];
+const TM=[1,4,6], TA=[0,3,5];
+
+const BK={step:1,spec:null,doc:null,date:'WED 11 DEC',slot:null};
+
+// ── AUTH ─────────────────────────────────────────────────────────────
+let role='patient';
+function selRole(r,btn){
+  role=r;
+  document.querySelectorAll('.role-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('l-email').value=r==='doctor'?'dr.smith@medicare.com':'patient@medicare.com';
+}
+function doLogin(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  setupRole(role);
+}
+function doLogout(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.querySelectorAll('[id^=page-]').forEach(p=>{p.innerHTML='';delete p.dataset.b;p.style.display='none'});
+  document.getElementById('page-booking').style.display='';
+}
+
+// ── ROLE ─────────────────────────────────────────────────────────────
+function setupRole(r){
+  const cfg={
+    patient:{name:'Sarah Johnson',role:'Patient Portal',av:'SJ',nav:[
+      {s:'My Health'},
+      {id:'booking',      ic:'📅',lb:'Book Appointment'},
+      {id:'prescriptions',ic:'💊',lb:'Prescriptions'},
+      {id:'records',      ic:'📋',lb:'Medical Records'},
+      {id:'billing',      ic:'🧾',lb:'Billing & Payments'},
+    ]},
+    doctor:{name:'Dr. Michael Smith',role:'Cardiologist',av:'MS',nav:[
+      {s:'Clinical'},
+      {id:'doctor',       ic:'📊',lb:'Dashboard'},
+      {id:'booking',      ic:'📅',lb:'My Schedule'},
+      {id:'records',      ic:'📋',lb:'Patient Records'},
+      {id:'prescriptions',ic:'💊',lb:'Prescriptions'},
+    ]},
+  }[r];
+  document.getElementById('u-av').textContent=cfg.av;
+  document.getElementById('u-name').textContent=cfg.name;
+  document.getElementById('u-role').textContent=cfg.role;
+  const nav=document.getElementById('sb-nav');
+  nav.innerHTML='';
+  cfg.nav.forEach(item=>{
+    if(item.s) nav.innerHTML+=`<div class="sb-sec">${item.s}</div>`;
+    else nav.innerHTML+=`<div class="nav-item" id="nav-${item.id}" onclick="showPage('${item.id}')"><span class="nav-icon">${item.ic}</span><span>${item.lb}</span></div>`;
+  });
+  showPage(r==='doctor'?'doctor':'booking');
+}
+function showPage(id){
+  document.querySelectorAll('[id^=page-]').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el=document.getElementById('page-'+id);
+  if(!el) return;
+  el.style.display='block';
+  if(!el.dataset.b){buildPage(id);el.dataset.b='1';}
+  const n=document.getElementById('nav-'+id);
+  if(n) n.classList.add('active');
+}
+function buildPage(id){
+  const el=document.getElementById('page-'+id);
+  const map={booking:buildBooking,doctor:buildDoctor,records:buildRecords,prescriptions:buildPrescriptions,billing:buildBilling};
+  if(map[id]) el.innerHTML=map[id]();
+}
+
+// ── BOOKING ───────────────────────────────────────────────────────────
+function buildBooking(){return `
+<div class="topbar">
+  <div class="ph" style="margin-bottom:0">
+    <div class="bc">Patient Portal <span>/ Book Appointment</span></div>
+    <h1>Book an Appointment</h1>
+    <p>Follow the steps to schedule a visit with a specialist</p>
+  </div>
+  <div class="topbar-r">
+    <div style="font-size:13px;color:var(--text3);padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px">📅 ${new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'})}</div>
+  </div>
+</div>
+
+<div class="step-bar" id="bk-bar">
+  <div class="step active" id="bs1"><div class="step-num">1</div><div class="step-lbl">Specialty</div><div class="step-line"></div></div>
+  <div class="step" id="bs2"><div class="step-num">2</div><div class="step-lbl">Doctor</div><div class="step-line"></div></div>
+  <div class="step" id="bs3"><div class="step-num">3</div><div class="step-lbl">Date & Time</div><div class="step-line"></div></div>
+  <div class="step" id="bs4"><div class="step-num">4</div><div class="step-lbl">Confirm</div></div>
+</div>
+
+<div id="bp1">
+  <div class="card">
+    <div class="card-hd"><span class="card-title">Select a Specialty</span><span style="font-size:13px;color:var(--text3)">8 specialties · 43 doctors</span></div>
+    <div class="card-body">
+      <div class="spec-grid">
+        ${SPECS.map(s=>`
+          <div class="spec-card" id="sc-${s.id}" onclick="bkSpec('${s.id}')">
+            <div class="spec-icon">${s.icon}</div>
+            <div class="spec-name">${s.name}</div>
+            <div class="spec-count">${s.n} doctors</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bp2" style="display:none">
+  <div class="card">
+    <div class="card-hd">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-sm btn-outline" onclick="bkStep(1)">← Back</button>
+        <span class="card-title" id="bk-doc-hd">Choose a Doctor</span>
+      </div>
+      <span class="badge bg-blue" id="bk-spec-badge"></span>
+    </div>
+    <div class="card-body"><div class="doc-grid" id="bk-doc-grid"></div></div>
+  </div>
+</div>
+
+<div id="bp3" style="display:none">
+  <div class="card">
+    <div class="card-hd">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-sm btn-outline" onclick="bkStep(2)">← Back</button>
+        <span class="card-title">Pick Date & Time</span>
+      </div>
+      <span id="bk-doc-chip"></span>
+    </div>
+    <div class="card-body">
+      <div style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:10px">Select date</div>
+      <div class="date-strip" id="bk-dates">
+        ${DATES.map((d,i)=>`
+          <div class="date-pill${i===2?' sel':''}" onclick="bkDate(this,'${d.d} ${d.n} ${d.m}')">
+            <div class="dp-day">${d.d}</div><div class="dp-num">${d.n}</div><div class="dp-mon">${d.m}</div>
+          </div>`).join('')}
+      </div>
+      <div style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px">Morning</div>
+      <div class="slot-grid" style="margin-bottom:16px">
+        ${MS.map((t,i)=>`<div class="slot${TM.includes(i)?' taken':''}" onclick="bkSlot(this,'${t}')">${t}</div>`).join('')}
+      </div>
+      <div style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px">Afternoon</div>
+      <div class="slot-grid" style="margin-bottom:20px">
+        ${AS.map((t,i)=>`<div class="slot${TA.includes(i)?' taken':''}" onclick="bkSlot(this,'${t}')">${t}</div>`).join('')}
+      </div>
+      <div style="padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div id="bk-slot-note" style="font-size:13px;color:var(--text3)">Select a time slot to continue</div>
+        <button class="btn btn-blue" id="bk-next3" onclick="bkStep(4)" style="opacity:0.35;pointer-events:none">Continue to Confirm →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bp4" style="display:none"></div>
+
+<div class="card" style="margin-top:22px">
+  <div class="card-hd"><span class="card-title">My Upcoming Appointments</span></div>
+  <div style="overflow-x:auto"><table>
+    <thead><tr><th>Date & Time</th><th>Doctor</th><th>Specialty</th><th>Type</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      ${[['Dec 15','10:30 AM','Dr. Michael Smith','Cardiology','Follow-up','Confirmed'],
+         ['Dec 18','2:00 PM','Dr. Emily Parker','Neurology','Consultation','Pending'],
+         ['Dec 22','11:00 AM','Dr. Raj Kumar','Orthopedics','Check-up','Confirmed'],
+         ['Nov 28','9:30 AM','Dr. Michael Smith','Cardiology','Routine','Completed'],
+      ].map(([date,time,doc,spec,type,status])=>`
+        <tr>
+          <td><div style="font-weight:500">${date}</div><div style="font-size:12px;color:var(--text3)">${time}</div></td>
+          <td>${doc}</td><td style="color:var(--text2)">${spec}</td>
+          <td><span class="badge bg-teal">${type}</span></td>
+          <td><span class="badge ${status==='Confirmed'?'bg-green':status==='Pending'?'bg-amber':'bg-blue'}"><span class="bdot"></span>${status}</span></td>
+          <td><div style="display:flex;gap:6px">
+            <button class="btn btn-sm btn-outline">View</button>
+            ${status!=='Completed'?'<button class="btn btn-sm btn-red" style="font-size:11px;padding:5px 9px">Cancel</button>':''}
+          </div></td>
+        </tr>`).join('')}
+    </tbody>
+  </table></div>
+</div>`;}
+
+// Booking logic
+function bkSpec(id){
+  document.querySelectorAll('.spec-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('sc-'+id)?.classList.add('selected');
+  BK.spec=id; BK.doc=null;
+  setTimeout(()=>bkStep(2),180);
+}
+
+function bkStep(n){
+  BK.step=n;
+  [1,2,3,4].forEach(i=>{
+    const p=document.getElementById('bp'+i); if(p) p.style.display=i===n?'block':'none';
+    const s=document.getElementById('bs'+i); if(s) s.className='step'+(i<n?' done':i===n?' active':'');
+  });
+  if(n===2) bkRenderDocs();
+  if(n===4) bkRenderConfirm();
+}
+
+function bkRenderDocs(){
+  const s=SPECS.find(x=>x.id===BK.spec);
+  const docs=DOCS[BK.spec]||[];
+  document.getElementById('bk-doc-hd').textContent=`Available ${s?.name||''} Doctors`;
+  document.getElementById('bk-spec-badge').textContent=s?.name||'';
+  document.getElementById('bk-doc-grid').innerHTML=docs.map(d=>`
+    <div class="doc-card" id="dc-${d.id}" onclick="bkDoc('${d.id}')">
+      <div class="doc-av" style="background:${d.bg};color:${d.tc}">${d.av}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600">${d.name}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">${d.sp} · ${d.exp}</div>
+        <div style="font-size:12px;color:var(--amber);margin-top:3px">★ ${d.rat}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <span class="badge bg-green" style="font-size:11px"><span class="bdot"></span>Available</span>
+          <span style="font-size:11px;color:var(--text3)">Next: ${d.next}</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:16px;font-weight:700">${d.fee}</div>
+        <div style="font-size:11px;color:var(--text3)">per visit</div>
+      </div>
+    </div>`).join('');
+}
+
+function bkDoc(id){
+  document.querySelectorAll('.doc-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('dc-'+id)?.classList.add('selected');
+  BK.doc=id;
+  const d=(DOCS[BK.spec]||[]).find(x=>x.id===id);
+  if(d) document.getElementById('bk-doc-chip').innerHTML=`<span class="badge bg-blue">👨‍⚕️ ${d.name}</span>`;
+  setTimeout(()=>bkStep(3),180);
+}
+
+function bkDate(el,label){
+  document.querySelectorAll('.date-pill').forEach(d=>d.classList.remove('sel'));
+  el.classList.add('sel'); BK.date=label;
+  document.querySelectorAll('.slot').forEach(s=>{if(!s.classList.contains('taken'))s.classList.remove('sel')});
+  BK.slot=null;
+  const btn=document.getElementById('bk-next3');
+  if(btn){btn.style.opacity='0.35';btn.style.pointerEvents='none';}
+  document.getElementById('bk-slot-note').textContent='Select a time slot to continue';
+}
+
+function bkSlot(el,t){
+  if(el.classList.contains('taken')) return;
+  document.querySelectorAll('.slot').forEach(s=>{if(!s.classList.contains('taken'))s.classList.remove('sel')});
+  el.classList.add('sel'); BK.slot=t;
+  const btn=document.getElementById('bk-next3');
+  if(btn){btn.style.opacity='1';btn.style.pointerEvents='auto';}
+  document.getElementById('bk-slot-note').textContent=`Selected: ${BK.date} at ${t}`;
+}
+
+function bkRenderConfirm(){
+  const s=SPECS.find(x=>x.id===BK.spec);
+  const d=(DOCS[BK.spec]||[]).find(x=>x.id===BK.doc);
+  if(!d||!s) return;
+  document.getElementById('bp4').innerHTML=`
+    <div class="card">
+      <div class="card-hd">
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="btn btn-sm btn-outline" onclick="bkStep(3)">← Back</button>
+          <span class="card-title">Confirm Your Appointment</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap">
+          <div style="flex:1;min-width:180px">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);margin-bottom:8px">Doctor</div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="width:44px;height:44px;border-radius:50%;background:${d.bg};color:${d.tc};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">${d.av}</div>
+              <div><div style="font-size:15px;font-weight:600">${d.name}</div><div style="font-size:13px;color:var(--text3)">${d.sp}</div></div>
+            </div>
+          </div>
+          <div style="flex:0 0 120px">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);margin-bottom:8px">Specialty</div>
+            <div style="font-size:26px">${s.icon}</div>
+            <div style="font-size:14px;font-weight:500">${s.name}</div>
+          </div>
+          <div style="flex:0 0 150px">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);margin-bottom:8px">Date & Time</div>
+            <div style="font-size:16px;font-weight:600">${BK.date}</div>
+            <div style="font-size:15px;color:var(--accent);font-weight:500">${BK.slot}</div>
+          </div>
+          <div style="flex:0 0 120px">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);margin-bottom:8px">Fee</div>
+            <div style="font-size:26px;font-weight:700">${d.fee}</div>
+            <div style="font-size:12px;color:var(--text3)">due at visit</div>
+          </div>
+        </div>
+        <div class="fr c2" style="margin-bottom:14px">
+          <div><label class="lbl">Visit type</label>
+            <select class="inp"><option>In-person</option><option>Telemedicine</option></select></div>
+          <div><label class="lbl">Insurance</label>
+            <select class="inp"><option>BlueCross BlueShield</option><option>Aetna</option><option>UnitedHealth</option><option>Self-pay</option></select></div>
+        </div>
+        <div style="margin-bottom:16px"><label class="lbl">Reason for visit</label>
+          <textarea class="inp" rows="3" style="resize:vertical" placeholder="Describe your symptoms or reason for this appointment..."></textarea></div>
+        <div class="alert al-amber">⚠️ Please arrive 15 minutes early. Bring your insurance card and a photo ID.</div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:6px">
+          <button class="btn btn-outline" onclick="bkStep(1)">Start over</button>
+          <button class="btn btn-green" onclick="bkConfirm()">✓ Confirm Appointment</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function bkConfirm(){
+  const d=(DOCS[BK.spec]||[]).find(x=>x.id===BK.doc);
+  if(!d) return;
+  const ref='#BK-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('bp4').innerHTML=`
+    <div class="card">
+      <div class="card-body" style="text-align:center;padding:48px 32px">
+        <div style="width:72px;height:72px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px">✅</div>
+        <div style="font-size:22px;font-weight:700;margin-bottom:10px">Appointment Confirmed!</div>
+        <div style="font-size:15px;color:var(--text2);margin-bottom:24px">
+          Your appointment with <strong>${d.name}</strong> is confirmed for<br>
+          <strong>${BK.date} at ${BK.slot}</strong>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px 28px;display:inline-block;text-align:left;margin-bottom:28px">
+          <div style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px">Booking Reference</div>
+          <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:var(--accent);letter-spacing:2px">${ref}</div>
+          <div style="margin-top:10px;font-size:13px;color:var(--text2)">Confirmation sent to <strong>patient@medicare.com</strong></div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:12px">
+          <button class="btn btn-outline" onclick="showPage('billing')">View Billing</button>
+          <button class="btn btn-blue" onclick="bkReset()">Book Another Appointment</button>
+        </div>
+      </div>
+    </div>`;
+  [1,2,3,4].forEach(i=>{ const s=document.getElementById('bs'+i); if(s) s.className='step done'; });
+}
+
+function bkReset(){
+  BK.step=1; BK.spec=null; BK.doc=null; BK.slot=null;
+  bkStep(1);
+  document.querySelectorAll('.spec-card').forEach(c=>c.classList.remove('selected'));
+}
+
+// ── DOCTOR DASHBOARD ──────────────────────────────────────────────────
+function buildDoctor(){return `
+<div class="topbar">
+  <div class="card" style="margin-bottom:20px">
+  <div class="card-hd">
+    <span class="card-title">Add Doctor (Backend Connected)</span>
+  </div>
+  <div class="card-body">
+    <input class="inp" type="text" id="name" placeholder="Doctor Name"><br><br>
+    <input class="inp" type="text" id="specialization" placeholder="Specialization"><br><br>
+    <input class="inp" type="number" id="experience" placeholder="Experience"><br><br>
+
+    <button class="btn btn-blue" onclick="addDoctor()">Add Doctor</button>
+  </div>
+</div>
+</div>
+<div class="sg">
+  ${[['🗓️','Today\'s Appointments','8','▲ 2 more than yesterday','up','var(--accent-light)'],
+     ['✅','Completed Today','5','3 remaining','','var(--green-bg)'],
+     ['⏳','Pending Reviews','3','Lab results awaiting','','var(--amber-bg)'],
+     ['🚨','Critical Alerts','1','Immediate attention','','var(--red-bg)'],
+  ].map(([ic,lb,v,ch,dir,bg])=>`
+    <div class="sc"><div class="si" style="background:${bg}">${ic}</div>
+      <div class="sv">${v}</div><div class="sl">${lb}</div>
+      <div class="sc-ch ${dir}">${ch}</div>
+    </div>`).join('')}
+</div>
+<div class="g2" style="margin-bottom:18px">
+  <div class="card">
+    <div class="card-hd"><span class="card-title">Today's Schedule</span><span class="badge bg-blue">8 appointments</span></div>
+    <div>
+      ${[['8:30 AM','Sarah Johnson','F/34','Annual checkup','Completed'],
+         ['9:00 AM','Robert Chen','M/58','Chest pain follow-up','In Progress'],
+         ['9:45 AM','Maria Garcia','F/45','ECG review','Waiting'],
+         ['10:30 AM','James Wilson','M/67','Post-surgery','Confirmed'],
+         ['11:15 AM','Linda Park','F/52','Hypertension mgmt','Confirmed'],
+      ].map(([t,name,demo,reason,status],i)=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);cursor:pointer;background:${i===1?'var(--accent-light)':''}"
+          onmouseover="if(${i}!==1)this.style.background='var(--surface2)'" onmouseout="if(${i}!==1)this.style.background=''">
+          <div style="font-size:12px;font-weight:600;color:var(--accent);width:60px;flex-shrink:0">${t}</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--accent);flex-shrink:0">${name.split(' ').map(n=>n[0]).join('')}</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">${name} <span style="color:var(--text3);font-size:12px">${demo}</span></div>
+            <div style="font-size:12px;color:var(--text3)">${reason}</div></div>
+          <span class="badge ${status==='In Progress'?'bg-amber':status==='Completed'?'bg-blue':status==='Waiting'?'bg-teal':'bg-green'}">${status}</span>
+        </div>`).join('')}
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:18px">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Department Stats</span></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+        ${[['Patient satisfaction','92%',92,'var(--green)'],['Appointment adherence','87%',87,'var(--accent)'],['Avg wait time','14 min',72,'var(--amber)'],['Bed occupancy','78%',78,'var(--teal)']].map(([l,v,p,c])=>`
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+              <span style="font-size:13px;color:var(--text2)">${l}</span>
+              <span style="font-size:13px;font-weight:600">${v}</span>
+            </div>
+            <div class="pbar"><div class="pfill" style="width:${p}%;background:${c}"></div></div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">🚨 Critical Alert</span></div>
+      <div class="card-body">
+        <div style="padding:12px;background:var(--red-bg);border:1px solid #f5c0bb;border-radius:8px;margin-bottom:10px">
+          <div style="font-size:13px;font-weight:600;color:var(--red)">⚠ Robert Chen — Critical BP</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:4px">BP: 180/120 mmHg. Immediate review required.</div>
+          <button class="btn btn-sm btn-red" style="margin-top:10px">Review Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-hd"><span class="card-title">Recent Patients</span>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;width:220px">
+      <span>🔍</span><input style="border:none;outline:none;font-size:14px;width:100%;font-family:inherit" placeholder="Search patient..."/>
+    </div>
+  </div>
+  <div style="overflow-x:auto"><table>
+    <thead><tr><th>Patient</th><th>Age</th><th>Diagnosis</th><th>Last Visit</th><th>Next Visit</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      ${[['Sarah Johnson','34, F','Hypertension','Dec 8','Dec 15','Stable'],
+         ['Robert Chen','58, M','Coronary Artery Disease','Dec 11','Dec 11','Critical'],
+         ['Maria Garcia','45, F','Arrhythmia','Dec 5','Dec 18','Monitoring'],
+         ['James Wilson','67, M','Post-CABG recovery','Nov 30','Dec 15','Recovering'],
+      ].map(([name,age,diag,last,next,status])=>`
+        <tr>
+          <td><div style="display:flex;align-items:center;gap:10px">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--accent)">${name.split(' ').map(n=>n[0]).join('')}</div>
+            <span style="font-weight:500">${name}</span>
+          </div></td>
+          <td>${age}</td><td>${diag}</td>
+          <td style="color:var(--text3)">${last}</td><td style="font-weight:500">${next}</td>
+          <td><span class="badge ${status==='Critical'?'bg-red':status==='Stable'?'bg-green':status==='Recovering'?'bg-blue':'bg-amber'}"><span class="bdot"></span>${status}</span></td>
+          <td><button class="btn btn-sm btn-outline" onclick="showPage('records')">View chart</button></td>
+        </tr>`).join('')}
+    </tbody>
+  </table></div>
+</div>`;}
+
+// ── MEDICAL RECORDS ───────────────────────────────────────────────────
+function buildRecords(){return `
+<div class="topbar">
+  <div class="ph" style="margin-bottom:0">
+    <div class="bc">Patient <span>/ Medical Records</span></div>
+    <h1>Medical Records</h1>
+    <p>Sarah Johnson · DOB: May 14, 1990 · MRN: #MR-20891</p>
+  </div>
+  <div class="topbar-r">
+    <button class="btn btn-outline">⬇ Export PDF</button>
+    <button class="btn btn-blue">🖨 Print</button>
+  </div>
+</div>
+<div style="display:flex;gap:18px;margin-bottom:18px">
+  <div class="card" style="width:240px;flex-shrink:0">
+    <div class="card-body" style="text-align:center">
+      <div style="width:66px;height:66px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;margin:0 auto 12px">SJ</div>
+      <div style="font-size:16px;font-weight:600">Sarah Johnson</div>
+      <div style="font-size:12px;color:var(--text3);margin:4px 0 10px">#MR-20891</div>
+      <span class="badge bg-green"><span class="bdot"></span>Active Patient</span>
+      <div style="text-align:left;margin-top:14px;display:flex;flex-direction:column;gap:8px">
+        ${[['🩸','Blood type','A+'],['⚖️','Weight','68 kg'],['📏','Height','165 cm'],['💊','Allergies','Penicillin'],['📅','DOB','May 14, 1990'],['📞','Phone','+1 555-0123']].map(([ic,lb,v])=>`
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding-bottom:7px;border-bottom:1px solid var(--border)">
+            <span style="color:var(--text3)">${ic} ${lb}</span>
+            <span style="font-weight:500;color:${lb==='Allergies'?'var(--red)':'var(--text)'}">${v}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:18px">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Current Vitals</span><span style="font-size:12px;color:var(--text3)">Updated Dec 11, 2025</span></div>
+      <div class="card-body">
+        <div class="vg">
+          ${[['120/80','mmHg','Blood pressure','bg-green','Normal'],['72','bpm','Heart rate','bg-green','Normal'],['98.4','°F','Temperature','bg-green','Normal'],['18','br/min','Respiration','bg-green','Normal'],['98','%','SpO2','bg-green','Normal'],['118','mg/dL','Glucose','bg-amber','Elevated']].map(([v,u,l,b,s])=>`
+            <div class="vc"><div class="vv">${v}</div><div class="vu">${u}</div><div class="vl">${l}</div>
+              <span class="badge ${b}" style="margin-top:7px;font-size:11px">${s}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Active Medications</span></div>
+      <div style="overflow-x:auto"><table>
+        <thead><tr><th>Medication</th><th>Dosage</th><th>Frequency</th><th>Prescribed by</th><th>Refills</th></tr></thead>
+        <tbody>
+          ${[['Lisinopril','10mg','Once daily','Dr. Smith','2 remaining'],['Metformin','500mg','Twice daily','Dr. Patel','5 remaining'],['Atorvastatin','20mg','Once at night','Dr. Smith','3 remaining'],['Aspirin','81mg','Once daily','Dr. Smith','Auto-refill']].map(([med,dose,freq,doc,ref])=>`
+            <tr><td style="font-weight:500">💊 ${med}</td><td><span class="badge bg-blue">${dose}</span></td><td>${freq}</td><td>${doc}</td><td>${ref}</td></tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+<div class="tabs">
+  <div class="tab active" onclick="swTab(this,'rh')">Visit History</div>
+  <div class="tab" onclick="swTab(this,'rl')">Lab Results</div>
+  <div class="tab" onclick="swTab(this,'ri')">Imaging</div>
+  <div class="tab" onclick="swTab(this,'rn')">Clinical Notes</div>
+</div>
+<div id="rh"><div class="card"><div class="card-body">
+  <div class="tl">
+    ${[['Dec 8, 2025','Cardiology follow-up','Dr. Michael Smith','BP 128/82. Medication adjusted.',['BP 128/82','Medication adjusted'],'✅'],
+       ['Nov 15, 2025','Annual physical','Dr. Sarah Lee','Cholesterol slightly elevated.',['CBC normal','Lipid panel ordered'],'🩺'],
+       ['Oct 3, 2025','Emergency visit','Dr. Raj Kumar','Chest pain — ruled out cardiac event.',['Troponin negative','ECG normal'],'⚠️'],
+    ].map(([date,title,doc,note,tags,ic],i)=>`
+      <div class="tl-item">${i<2?'<div class="tl-line"></div>':''}
+        <div class="tl-dot">${ic}</div>
+        <div style="flex:1">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;flex-wrap:wrap">
+            <span style="font-size:14px;font-weight:600">${title}</span>
+            <span class="badge bg-teal" style="font-size:11px">${date}</span>
+            <span style="font-size:12px;color:var(--text3)">${doc}</span>
+          </div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:7px">${note}</div>
+          <div style="display:flex;gap:6px">${tags.map(t=>`<span class="badge bg-blue" style="font-size:11px">${t}</span>`).join('')}</div>
+        </div>
+      </div>`).join('')}
+  </div>
+</div></div></div>
+<div id="rl" style="display:none"><div class="card"><div style="overflow-x:auto"><table>
+  <thead><tr><th>Test</th><th>Result</th><th>Reference</th><th>Status</th><th>Date</th></tr></thead>
+  <tbody>
+    ${[['Total Cholesterol','195 mg/dL','< 200 mg/dL','bg-green','Normal','Dec 5'],['LDL','128 mg/dL','< 100 mg/dL','bg-amber','High','Dec 5'],['Fasting glucose','118 mg/dL','70–99','bg-amber','Elevated','Dec 5'],['HbA1c','5.9%','< 5.7%','bg-amber','Borderline','Nov 15'],['Hemoglobin','13.8 g/dL','12–16','bg-green','Normal','Nov 15']].map(([t,r,ref,b,s,d])=>`
+      <tr><td style="font-weight:500">${t}</td><td style="font-family:'DM Mono',monospace;font-size:13px">${r}</td><td style="font-size:12px;color:var(--text3)">${ref}</td><td><span class="badge ${b}">${s}</span></td><td>${d}</td></tr>`).join('')}
+  </tbody>
+</table></div></div></div>
+<div id="ri" style="display:none"><div class="card"><div class="card-body">
+  <div class="g3">
+    ${[['Chest X-Ray','Nov 2025','Normal','🫁'],['ECG','Dec 2025','Normal sinus rhythm','❤️'],['Echocardiogram','Oct 2025','EF 62% — Normal','🔬']].map(([n,d,r,ic])=>`
+      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <div style="height:100px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:38px">${ic}</div>
+        <div style="padding:12px"><div style="font-size:13px;font-weight:600">${n}</div><div style="font-size:12px;color:var(--text3)">${d}</div>
+          <span class="badge bg-green" style="margin-top:6px;font-size:11px">${r}</span></div>
+      </div>`).join('')}
+  </div>
+</div></div></div>
+<div id="rn" style="display:none"><div class="card"><div class="card-body">
+  ${[['Dec 8, 2025','Dr. Michael Smith','Patient reports reduced shortness of breath. BP well controlled on current regimen. Advised increased physical activity and sodium restriction. Lipid-lowering therapy initiated.'],
+     ['Nov 15, 2025','Dr. Sarah Lee','Annual wellness visit. Patient is doing well. Recommended follow-up in 3 months for glucose management.']].map(([d,doc,note])=>`
+    <div style="padding:14px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:600">${doc}</span><span style="font-size:12px;color:var(--text3)">${d}</span>
+      </div>
+      <p style="font-size:14px;color:var(--text2);line-height:1.6">${note}</p>
+    </div>`).join('')}
+</div></div></div>`;}
+
+// ── PRESCRIPTIONS ─────────────────────────────────────────────────────
+function buildPrescriptions(){return `
+<div class="topbar">
+  <div class="ph" style="margin-bottom:0">
+    <div class="bc">Patient Portal <span>/ Prescriptions</span></div>
+    <h1>Prescriptions</h1>
+    <p>Your active and past medication prescriptions</p>
+  </div>
+  <div class="topbar-r">
+    <button class="btn btn-outline">📤 Share with pharmacy</button>
+    <button class="btn btn-blue">⬇ Download all</button>
+  </div>
+</div>
+<div class="alert al-green">✅ 4 active prescriptions · Next refill due: <strong>Lisinopril — Dec 20, 2025</strong></div>
+<div class="card" style="margin-bottom:18px">
+  <div class="card-hd"><span class="card-title">Active Prescriptions</span><span class="badge bg-green">4 active</span></div>
+  <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+    ${[{name:'Lisinopril',dose:'10mg',freq:'Once daily, morning',by:'Dr. Smith',since:'Jan 15, 2024',refills:2,exp:'Mar 2026',bg:'#e8f0fb',tc:'#0057b8',ind:'Hypertension'},
+       {name:'Metformin',dose:'500mg',freq:'Twice daily with meals',by:'Dr. Patel',since:'Mar 8, 2024',refills:5,exp:'Jun 2026',bg:'#e6f4ee',tc:'#0a7c4a',ind:'Blood glucose control'},
+       {name:'Atorvastatin',dose:'20mg',freq:'Once daily at bedtime',by:'Dr. Smith',since:'Jun 22, 2024',refills:3,exp:'Sep 2026',bg:'#e0f2f7',tc:'#0e7490',ind:'High cholesterol'},
+       {name:'Aspirin',dose:'81mg',freq:'Once daily',by:'Dr. Smith',since:'Jan 15, 2024',refills:-1,exp:'Ongoing',bg:'#fef3c7',tc:'#b45309',ind:'Cardiovascular prevention'},
+    ].map(rx=>`
+      <div class="rx-card">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <div style="width:44px;height:44px;border-radius:10px;background:${rx.bg};display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💊</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+              <span style="font-size:15px;font-weight:700">${rx.name}</span>
+              <span class="badge" style="background:${rx.bg};color:${rx.tc};font-size:11px">${rx.dose}</span>
+              <span class="badge bg-green" style="font-size:11px"><span class="bdot"></span>Active</span>
+            </div>
+            <div style="font-size:13px;color:var(--text2);margin-bottom:4px">📋 ${rx.ind}</div>
+            <div style="font-size:13px;color:var(--text3)">🕐 ${rx.freq}</div>
+            <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;font-size:12px;color:var(--text3)">
+              <span>By: <strong style="color:var(--text2)">${rx.by}</strong></span>
+              <span>Since: <strong style="color:var(--text2)">${rx.since}</strong></span>
+              <span>Expires: <strong style="color:var(--text2)">${rx.exp}</strong></span>
+            </div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            ${rx.refills===-1?'<span class="badge bg-teal">Auto-refill</span>':`<span class="badge ${rx.refills<=2?'bg-amber':'bg-blue'}">${rx.refills} refills left</span>`}
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+              <button class="btn btn-sm btn-blue" onclick="showToast('Refill request sent for ${rx.name}!')">Request refill</button>
+              <button class="btn btn-sm btn-outline" onclick="showToast('Downloading ${rx.name} prescription...')">Download Rx</button>
+            </div>
+          </div>
+        </div>
+      </div>`).join('')}
+  </div>
+</div>
+<div class="card">
+  <div class="card-hd"><span class="card-title">Past Prescriptions</span></div>
+  <div style="overflow-x:auto"><table>
+    <thead><tr><th>Medication</th><th>Dosage</th><th>Indication</th><th>Prescribed by</th><th>Period</th><th>Status</th></tr></thead>
+    <tbody>
+      ${[['Amoxicillin','500mg','Bacterial infection','Dr. Lee','Oct 2024 (10 days)','Completed'],['Prednisone','20mg','Inflammation','Dr. Kumar','Aug 2024 (5 days)','Completed'],['Omeprazole','20mg','Acid reflux','Dr. Patel','May 2024 (1 month)','Discontinued']].map(([med,dose,ind,doc,period,status])=>`
+        <tr>
+          <td style="font-weight:500">💊 ${med}</td><td><span class="badge bg-blue">${dose}</span></td>
+          <td style="color:var(--text2)">${ind}</td><td>${doc}</td><td style="color:var(--text3)">${period}</td>
+          <td><span class="badge ${status==='Completed'?'bg-teal':'bg-amber'}">${status}</span></td>
+        </tr>`).join('')}
+    </tbody>
+  </table></div>
+</div>`;}
+
+// ── BILLING ───────────────────────────────────────────────────────────
+function buildBilling(){return `
+<div class="topbar">
+  <div class="ph" style="margin-bottom:0">
+    <div class="bc">Patient Portal <span>/ Billing & Payments</span></div>
+    <h1>Billing & Payments</h1>
+    <p>Manage invoices, insurance claims, and payment methods</p>
+  </div>
+  <div class="topbar-r">
+    <button class="btn btn-outline">⬇ Statements</button>
+    <button class="btn btn-blue">+ Add payment method</button>
+  </div>
+</div>
+<div class="g3" style="margin-bottom:20px">
+  ${[['💳','Outstanding Balance','$240.00','1 invoice due','var(--red-bg)','var(--red)','#f5c0bb'],
+     ['✅','Paid This Year','$1,840.00','8 payments made','var(--green-bg)','var(--green)','#a7d9be'],
+     ['🏥','Insurance Covered','$3,200.00','Estimated this year','var(--accent-light)','var(--accent)','#bfd4f5'],
+  ].map(([ic,lb,v,sub,bg,tc,br])=>`
+    <div style="background:${bg};border:1px solid ${br};border-radius:var(--radius);padding:20px">
+      <div style="font-size:22px;margin-bottom:8px">${ic}</div>
+      <div style="font-size:26px;font-weight:700;color:${tc}">${v}</div>
+      <div style="font-size:13px;font-weight:600;color:${tc};margin-top:2px">${lb}</div>
+      <div style="font-size:12px;color:${tc}99;margin-top:4px">${sub}</div>
+    </div>`).join('')}
+</div>
+
+<div class="card" style="margin-bottom:18px">
+  <div class="card-hd">
+    <span class="card-title">💳 Outstanding Invoice</span>
+    <span class="badge bg-red" id="inv-status"><span class="bdot"></span>Due Dec 20, 2025</span>
+  </div>
+  <div class="card-body">
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:18px">
+      ${[['Invoice','#INV-2025-0112'],['Visit date','Dec 8, 2025'],['Provider','Dr. Michael Smith'],['Insurance','BlueCross BlueShield']].map(([l,v])=>`
+        <div><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);margin-bottom:4px">${l}</div>
+          <div style="font-size:14px;font-weight:500;font-family:${l==='Invoice'?'\'DM Mono\',monospace':'inherit'}">${v}</div>
+        </div>`).join('')}
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:18px">
+      <div class="bill-row"><span style="color:var(--text2)">Cardiology consultation (60 min)</span><span style="font-weight:500">$300.00</span></div>
+      <div class="bill-row"><span style="color:var(--text2)">ECG / EKG procedure</span><span style="font-weight:500">$80.00</span></div>
+      <div class="bill-row"><span style="color:var(--text2)">Blood pressure monitoring</span><span style="font-weight:500">$40.00</span></div>
+      <div class="bill-row"><span style="color:var(--text2)">Lab processing fee</span><span style="font-weight:500">$20.00</span></div>
+      <div class="bill-row"><span style="color:var(--green)">Insurance (BlueCross BlueShield)</span><span style="color:var(--green);font-weight:500">−$200.00</span></div>
+      <div class="bill-total"><span>Total due</span><span style="color:var(--red)" id="bill-amt">$240.00</span></div>
+    </div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:10px">Choose payment method</div>
+    <div class="pay-method">
+      <div class="pay-opt sel" onclick="selPay(this)">💳 Visa •••• 4242</div>
+      <div class="pay-opt" onclick="selPay(this)">🏦 Bank transfer</div>
+      <div class="pay-opt" onclick="selPay(this)">📱 Apple Pay</div>
+      <div class="pay-opt" onclick="selPay(this,true)">➕ New card</div>
+    </div>
+    <div id="new-card" style="display:none;margin-bottom:14px">
+      <div class="fr c2" style="margin-bottom:12px">
+        <div><label class="lbl">Card number</label><input class="inp" placeholder="1234 5678 9012 3456"/></div>
+        <div><label class="lbl">Name on card</label><input class="inp" placeholder="Sarah Johnson"/></div>
+      </div>
+      <div class="fr c3">
+        <div><label class="lbl">Expiry</label><input class="inp" placeholder="MM/YY"/></div>
+        <div><label class="lbl">CVV</label><input class="inp" type="password" placeholder="•••"/></div>
+        <div><label class="lbl">ZIP</label><input class="inp" placeholder="10001"/></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-green" style="font-size:14px;padding:11px 24px" onclick="payNow()">Pay $240.00 now</button>
+      <button class="btn btn-outline" onclick="showToast('Payment plan request sent to billing department.')">Set up payment plan</button>
+      <span style="font-size:12px;color:var(--text3)">🔒 256-bit SSL secured</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-hd"><span class="card-title">Payment History</span></div>
+  <div style="overflow-x:auto"><table>
+    <thead><tr><th>Invoice</th><th>Date</th><th>Description</th><th>Insurance</th><th>You paid</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      ${[['#INV-2025-0098','Nov 15','Annual physical — Dr. Lee','$250.00','$50.00'],
+         ['#INV-2025-0084','Oct 3','Emergency visit — Dr. Kumar','$400.00','$120.00'],
+         ['#INV-2025-0071','Aug 20','Cardiology follow-up','$200.00','$60.00'],
+         ['#INV-2025-0058','Jun 22','Blood work + labs','$180.00','$40.00'],
+      ].map(([inv,date,desc,ins,you])=>`
+        <tr>
+          <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent)">${inv}</td>
+          <td>${date}</td><td style="color:var(--text2)">${desc}</td>
+          <td style="color:var(--green)">${ins}</td><td style="font-weight:600">${you}</td>
+          <td><span class="badge bg-green"><span class="bdot"></span>Paid</span></td>
+          <td><button class="btn btn-sm btn-ghost" onclick="showToast('Downloading receipt...')">Receipt</button></td>
+        </tr>`).join('')}
+    </tbody>
+  </table></div>
+</div>`;}
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+function swTab(el,id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['rh','rl','ri','rn'].forEach(t=>{ const d=document.getElementById(t); if(d) d.style.display=t===id?'block':'none'; });
+}
+function selPay(el,newCard){
+  document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  const nc=document.getElementById('new-card');
+  if(nc) nc.style.display=newCard?'block':'none';
+}
+function payNow(){
+  const m=document.querySelector('.pay-opt.sel')?.textContent?.trim()||'card';
+  const inv=document.getElementById('inv-status');
+  const amt=document.getElementById('bill-amt');
+  if(inv){inv.innerHTML='<span class="bdot"></span>Paid';inv.className='badge bg-green';}
+  if(amt){amt.textContent='$0.00';amt.style.color='var(--green)';}
+  showToast('✓ Payment of $240.00 processed via '+m+'. Receipt sent to patient@medicare.com');
+}
+
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(tt); tt=setTimeout(()=>t.style.opacity='0',4000);
+}
+async function addDoctor() {
+    const doctor = {
+        name: document.getElementById("name").value,
+        specialization: document.getElementById("specialization").value,
+        experience: parseInt(document.getElementById("experience").value)
+    };
+
+    await fetch("http://localhost:8080/doctors", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(doctor)
+    });
+
+    showToast("Doctor Added Successfully!");
+}
+</script>
+</body>
+</html>
